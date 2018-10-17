@@ -1,5 +1,5 @@
 # Modules
 
 # Menus
-# . $PSScriptRoot\functions\Menus\ShowMainMenu.ps1
+. $PSScriptRoot\functions\Menus\ShowRealtimeMenu.ps1
 
