@@ -57,6 +57,8 @@ function ShowRealtimeMenu() {
         Write-Host "11: Show commands to SSH to $namespace containers"
         Write-Host "12: Delete all data in $namespace"
         Write-Host "13: Show command to run Fabric.Realtime tester"
+        Write-Host "------ Testers --------"
+        Write-Host "31: Test interface engine"
         Write-Host "-----------"
         Write-Host "q: Go back to main menu"
         $userinput = Read-Host "Please make a selection"
@@ -178,6 +180,11 @@ function ShowRealtimeMenu() {
             }
             '13' {
                 RunRealtimeTester -baseUrl $baseUrl
+            }
+            '31' {
+                $loadBalancerInfo = $(GetLoadBalancerIPs)
+                $loadBalancerInternalIP = $loadBalancerInfo.InternalIP
+                Test-InterfaceEngine -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
             }
             'q' {
                 return
