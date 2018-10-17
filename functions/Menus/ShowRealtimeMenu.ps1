@@ -184,7 +184,8 @@ function ShowRealtimeMenu() {
             '31' {
                 $loadBalancerInfo = $(GetLoadBalancerIPs)
                 $loadBalancerInternalIP = $loadBalancerInfo.InternalIP
-                Test-InterfaceEngine -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
+                Test-TcpPortInterfaceEngine -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
+                Test-SendingHL7 -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
             }
             'q' {
                 return

@@ -1,25 +1,25 @@
 <#
 .SYNOPSIS
-Test-InterfaceEngine
+Test-TcpPortInterfaceEngine
 
 .DESCRIPTION
-Test-InterfaceEngine
+Test-TcpPortInterfaceEngine
 
 .INPUTS
-Test-InterfaceEngine - The name of Test-InterfaceEngine
+Test-TcpPortInterfaceEngine - The name of Test-TcpPortInterfaceEngine
 
 .OUTPUTS
 None
 
 .EXAMPLE
-Test-InterfaceEngine
+Test-TcpPortInterfaceEngine
 
 .EXAMPLE
-Test-InterfaceEngine
+Test-TcpPortInterfaceEngine
 
 
 #>
-function Test-InterfaceEngine() {
+function Test-TcpPortInterfaceEngine() {
     [CmdletBinding()]
     param
     (
@@ -29,7 +29,7 @@ function Test-InterfaceEngine() {
         $InterfaceEngineHost
     )
 
-    Write-Verbose 'Test-InterfaceEngine: Starting'
+    Write-Verbose 'Test-TcpPortInterfaceEngine: Starting'
 
     [int] $port = 6661
     [bool] $result = $(Test-NetConnection -ComputerName "$InterfaceEngineHost" -Port $port -InformationLevel Quiet)
@@ -41,8 +41,8 @@ function Test-InterfaceEngine() {
         Test-NetConnection -ComputerName "$InterfaceEngineHost" -Port $port -InformationLevel Detailed
     }
 
-    Write-Verbose 'Test-InterfaceEngine: Done'
+    Write-Verbose 'Test-TcpPortInterfaceEngine: Done'
 
 }
 
-Export-ModuleMember -Function 'Test-InterfaceEngine'
+Export-ModuleMember -Function 'Test-TcpPortInterfaceEngine'
