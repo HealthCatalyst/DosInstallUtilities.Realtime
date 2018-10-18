@@ -46,72 +46,44 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^
     # [string] $command = $leadingCharacter + $message + $endingCharacter1 + $endingCharacter2
     # [string] $command = [System.Convert]::ToChar(11) + $leadingCharacter + $message + [System.Convert]::ToChar(28) + [System.Convert]::ToChar(13)
 
-    [string] $command = "B" + $leadingCharacter + $message + $endingCharacter1 + $endingCharacter2
+    [string] $command = $leadingCharacter + $message + $endingCharacter1 + $endingCharacter2
 
     $data = [System.Text.ASCIIEncoding]::ASCII.GetBytes($command)
 
     [int] $port = 6661
 
-    $tcpConnection = New-Object System.Net.Sockets.TcpClient($InterfaceEngineHost, $port)
-    $tcpStream = $tcpConnection.GetStream()
-    $reader = New-Object System.IO.StreamReader($tcpStream)
-    $writer = New-Object System.IO.StreamWriter($tcpStream, [System.Text.ASCIIEncoding]::ASCII)
-    $writer.AutoFlush = $true
+    [System.Net.IPAddress] $ipaddress = [System.Net.IPAddress]::Parse($InterfaceEngineHost);
 
-    $buffer = new-object System.Byte[] 1024
-    $encoding = new-object System.Text.AsciiEncoding
+    [System.Net.IPEndPoint] $ipe = New-Object System.Net.IPEndPoint($ipaddress, $port)
+    [System.Net.Sockets.SocketType] $socketType = [System.Net.Sockets.SocketType]::Stream
 
-    Write-Host "Waiting for connection to $InterfaceEngineHost"
-    while (!$tcpConnection.Connected) {
-        Write-Host "." -NoNewline
+    [System.Net.Sockets.Socket] $tempSocket = New-Object System.Net.Sockets.Socket($ipe.AddressFamily, `
+                                                                     $socketType, [System.Net.Sockets.ProtocolType]::Tcp);
+
+    $tempSocket.Connect($ipe)
+
+    $tempSocket.Send($data, $data.Length, 0);
+
+    $tempSocket.ReceiveTimeout = 30000;
+
+    [int] $bytes = 0
+
+    $bytesReceived = new-object System.Byte[] 1024
+    $bytes = $tempSocket.Receive($bytesReceived, $bytesReceived.Length, 0)
+    [string] $page = [System.Text.ASCIIEncoding]::ASCII.GetString($bytesReceived, 0, $bytes);
+
+    Write-Host "------------- Response ------------"
+    Write-Host $page
+    Write-Host "------------- End of Response ------------"
+
+    $tempSocket.Close()
+
+    if($page.Contains("MSA|AA")){
+        Write-Host "Successfully received response from interface engine"
     }
-
-    [bool] $messageSent = $false
-
-    [DateTime] $startDate = Get-Date
-    [int] $timeoutInMinutes = 1
-    [bool] $receivedResponse = $false
-
-    while ($tcpConnection.Connected -and !$receivedResponse -and ($startDate.AddMinutes($timeoutInMinutes) -gt (Get-Date))) {
-        while ($tcpStream.DataAvailable) {
-            $rawresponse = $reader.Read($buffer, 0, 1024)
-            $response = $encoding.GetString($buffer, 0, $rawresponse)
-            Write-Host "---- Response ---"
-            Write-Host $response
-            Write-Host "---- End of Response ---"
-            $receivedResponse=$true
-        }
-
-        if ($tcpConnection.Connected) {
-            if (!$messageSent) {
-                $messageSent = $true
-                # [char[]] $array = @()
-                # $array += [char]11
-                # $array += $message.ToCharArray()
-                # $array += [char]28
-                # $array += [char]13
-                Write-Host "--- Sending message ---"
-                Write-Host $message
-                Write-Host "--- End of message ---"
-                Write-Host "--- Sending message ---"
-                Write-Host "0=[$($data[0])], 1=[$($data[1])]"
-                Write-Host "--- End of message ---"
-                $writer.Write($data, 0, $data.Length)
-                Write-Host "Waiting for response from $InterfaceEngineHost"
-            }
-        }
-
-        Write-Host "." -NoNewline
-        start-sleep -Milliseconds 500
+    else {
+        Write-Error "Failed to get correct response from interface engine"
     }
-
-    Write-Host ""
-
-    $reader.Close()
-    $writer.Close()
-
-    $tcpConnection.Close()
-
     Write-Verbose 'Test-SendingHL7: Done'
 
 }
