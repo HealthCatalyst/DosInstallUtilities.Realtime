@@ -197,13 +197,15 @@ function ShowRealtimeMenu() {
             '31' {
                 $loadBalancerInfo = $(GetLoadBalancerIPs)
                 $loadBalancerInternalIP = $loadBalancerInfo.InternalIP
-                Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 3307
+                # Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 3307
                 Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 6661
                 Test-SendingHL7 -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
             }
             '32' {
-                $result = $(Test-DownloadCertificate -CertificateHost "104.42.156.207")
-                Install-Certificate -certdata $($result.CertData) -certpass "mycertpassword"
+                $loadBalancerInfo = $(GetLoadBalancerIPs)
+                $result = $(Test-DownloadCertificate -CertificateHost $($loadBalancerInfo.ExternalIP))
+                $certpassword = $(ReadSecretPassword certpassword $namespace)
+                Install-Certificate -certdata $($result.CertData) -certpass "$certpassword"
             }
             'q' {
                 return
