@@ -33,24 +33,19 @@ function CreateSecretsForStack() {
 
     CreateNamespaceIfNotExists -namespace $namespace
 
-    switch ( $namespace ) {
-        "fabricrealtime" {
-            Write-Host "$namespace"
+    $secret = "certhostname"
+    $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
+    SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
 
-            $secret="certhostname"
-            $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
-            SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
+    $secret = "mysqlrootpassword"
+    GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
+    $secret = "mysqlpassword"
+    GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
+    $secret = "certpassword"
+    GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
+    $secret = "rabbitmqmgmtuipassword"
+    GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
 
-            $secret="mysqlrootpassword"
-            GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
-            $secret="mysqlpassword"
-            GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
-            $secret="certpassword"
-            GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
-            $secret="rabbitmqmgmtuipassword"
-            GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
-        }
-    }
     Write-Verbose 'CreateSecretsForStack: Done'
 }
 

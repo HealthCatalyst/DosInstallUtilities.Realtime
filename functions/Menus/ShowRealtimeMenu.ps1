@@ -56,8 +56,9 @@ function ShowRealtimeMenu() {
         Write-Host "9: Troubleshoot Ingresses"
         Write-Host "10: Restart $namespace"
         Write-Host "11: Show commands to SSH to $namespace containers"
-        Write-Host "12: Delete all data in $namespace"
         Write-Host "13: Show command to run Fabric.Realtime tester"
+        Write-Host "------ Delete data --------"
+        Write-Host "12: Delete all data in $namespace"
         Write-Host "------ Testers --------"
         Write-Host "31: Test interface engine"
         Write-Host "32: Install Certificate on this machine (Needs Run As Administrator)"
@@ -188,7 +189,9 @@ function ShowRealtimeMenu() {
 
                 $isAzure = $true
                 if ($confirmation -eq "y") {
-                    DeleteNamespaceAndData -namespace "$namespace" -isAzure $isAzure
+
+                    DeleteHelmPackage -package $namespace -Verbose
+                    DeleteNamespaceAndData -namespace "$namespace" -isAzure $isAzure -Verbose
                 }
             }
             '13' {
