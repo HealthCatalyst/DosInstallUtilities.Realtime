@@ -44,7 +44,7 @@ function Install-Certificate() {
 
     # http://paulstovell.com/blog/x509certificate2
 
-    $flags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::UserKeySet -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
+    $flags = [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::MachineKeySet -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::PersistKeySet -bor [System.Security.Cryptography.X509Certificates.X509KeyStorageFlags]::Exportable
 
     [System.Security.Cryptography.X509Certificates.X509Certificate2] $cert = New-Object System.Security.Cryptography.X509Certificates.X509Certificate2(`
             $certdata, `
@@ -62,6 +62,8 @@ function Install-Certificate() {
     # [string] $userName = [System.Security.Principal.WindowsIdentity]::GetCurrent().Name;
 
     # AddAccessToCertificate($cert);
+
+    Write-Host "Saved certificate in Local Computer store on this machine: Personal->Certificates"
 
     Write-Verbose 'Install-Certificate: Done'
 }
