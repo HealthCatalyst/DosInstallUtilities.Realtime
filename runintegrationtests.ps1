@@ -13,6 +13,8 @@ $VerbosePreference = "continue"
 
 Import-Module -Name "PSRabbitMq" -MinimumVersion "0.3.1"
 
+Import-Module -Name "RabbitMQTools" -MinimumVersion "1.5"
+
 $module = "DosInstallUtilities.Azure"
 Get-Module "$module" | Remove-Module -Force
 Import-Module "$here\..\$module\$module.psm1" -Force
@@ -37,3 +39,5 @@ Invoke-Pester "$here\functions\Testers\Test-SendingHL7.Tests.ps1" -Tag 'Integrat
 Invoke-Pester "$here\functions\Testers\Test-DownloadCertificate.Tests.ps1" -Tag 'Integration' -Verbose
 
 Invoke-Pester "$here\functions\Testers\Install-Certificate.Tests.ps1" -Tag 'Integration' -Verbose
+
+Invoke-Pester "$here\functions\Testers\Test-RabbitMq.Tests.ps1" -Tag 'Integration' -Verbose

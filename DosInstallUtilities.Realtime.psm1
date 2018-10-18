@@ -11,3 +11,4 @@
 . $PSScriptRoot\functions\Testers\Test-SendingHL7.ps1
 . $PSScriptRoot\functions\Testers\Test-DownloadCertificate.ps1
 . $PSScriptRoot\functions\Testers\Install-Certificate.ps1
+. $PSScriptRoot\functions\Testers\Test-RabbitMq.ps1
