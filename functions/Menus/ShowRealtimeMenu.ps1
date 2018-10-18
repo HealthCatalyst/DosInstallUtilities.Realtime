@@ -60,6 +60,7 @@ function ShowRealtimeMenu() {
         Write-Host "13: Show command to run Fabric.Realtime tester"
         Write-Host "------ Testers --------"
         Write-Host "31: Test interface engine"
+        Write-Host "32: Install Certificate on this machine (Needs Run As Administrator)"
         Write-Host "-----------"
         Write-Host "q: Go back to main menu"
         $userinput = Read-Host "Please make a selection"
@@ -199,6 +200,10 @@ function ShowRealtimeMenu() {
                 Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 3307
                 Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 6661
                 Test-SendingHL7 -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
+            }
+            '32' {
+                $result = $(Test-DownloadCertificate -CertificateHost "104.42.156.207")
+                Install-Certificate -certdata $($result.CertData) -certpass "mycertpassword"
             }
             'q' {
                 return

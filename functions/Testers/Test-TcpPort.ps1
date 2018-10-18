@@ -46,7 +46,6 @@ function Test-TcpPort() {
     }
 
     Write-Verbose 'Test-TcpPort: Done'
-
 }
 
 Export-ModuleMember -Function 'Test-TcpPort'
