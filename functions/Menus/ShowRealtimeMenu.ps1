@@ -19,6 +19,7 @@ ShowRealtimeMenu
 
 
 #>
+$here = Split-Path -Parent $MyInvocation.MyCommand.Path
 function ShowRealtimeMenu() {
     [CmdletBinding()]
     param
@@ -65,8 +66,18 @@ function ShowRealtimeMenu() {
         switch ($userinput) {
             '1' {
                 $packageUrl = $globals.realtimePackageUrl
+                if($local)
+                {
+                    $packageUrl = "$here\..\..\..\helm.realtime\fabricrealtime"
+                    Write-Host "Loading package from $packageUrl"
+                }
                 $namespace = "fabricrealtime"
-                InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local
+
+                $VerbosePreference  = 'Continue'
+
+                CreateSecretsForStack -namespace $namespace -Verbose
+
+                InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local -Verbose
             }
             '2' {
                 kubectl get 'deployments,pods,services,ingress,secrets,persistentvolumeclaims,persistentvolumes,nodes' --namespace=$namespace -o wide
@@ -174,6 +185,7 @@ function ShowRealtimeMenu() {
                 Do { $confirmation = Read-Host "Do you want to continue? (y/n)"}
                 while ([string]::IsNullOrWhiteSpace($confirmation))
 
+                $isAzure = $true
                 if ($confirmation -eq "y") {
                     DeleteNamespaceAndData -namespace "$namespace" -isAzure $isAzure
                 }
@@ -184,7 +196,8 @@ function ShowRealtimeMenu() {
             '31' {
                 $loadBalancerInfo = $(GetLoadBalancerIPs)
                 $loadBalancerInternalIP = $loadBalancerInfo.InternalIP
-                Test-TcpPortInterfaceEngine -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
+                Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 3307
+                Test-TcpPort -InterfaceEngineHost $($loadBalancerInfo.ExternalIP) -port 6661
                 Test-SendingHL7 -InterfaceEngineHost $($loadBalancerInfo.ExternalIP)
             }
             'q' {

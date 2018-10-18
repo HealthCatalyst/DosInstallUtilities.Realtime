@@ -10,6 +10,11 @@ Import-Module Pester
 
 $VerbosePreference = "continue"
 
+$module = "DosInstallUtilities.Kube"
+Get-Module "$module" | Remove-Module -Force
+
+Import-Module "$here\..\$module\$module.psm1" -Force
+
 $module = "DosInstallUtilities.Realtime"
 Get-Module "$module" | Remove-Module -Force
 

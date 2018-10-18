@@ -62,7 +62,10 @@ PV1|1|O|||||^^^^^^^^|^^^^^^^^
 
     [bool] $messageSent = $false
 
-    while ($tcpConnection.Connected) {
+    [DateTime] $startDate = Get-Date
+    [int] $timeoutInMinutes = 1
+
+    while ($tcpConnection.Connected -and ($startDate.AddMinutes($timeoutInMinutes) -gt (Get-Date))) {
         while ($tcpStream.DataAvailable) {
             $rawresponse = $reader.Read($buffer, 0, 1024)
             $response = $encoding.GetString($buffer, 0, $rawresponse)
