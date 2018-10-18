@@ -54,7 +54,6 @@ function ShowRealtimeMenu() {
         Write-Host "7: Show urls to download client certificates"
         # Write-Host "8: Show DNS entries for /etc/hosts"
         Write-Host "9: Troubleshoot Ingresses"
-        Write-Host "10: Restart $namespace"
         Write-Host "11: Show commands to SSH to $namespace containers"
         Write-Host "13: Show command to run Fabric.Realtime tester"
         Write-Host "------ Delete data --------"
@@ -173,11 +172,6 @@ function ShowRealtimeMenu() {
             # }
             '9' {
                 TroubleshootIngress "$namespace"
-            }
-            '10' {
-                # this gets the new solr pods going before the old solr ones have released locks
-                #                DeleteAllPodsInNamespace -namespace $namespace
-                InstallProduct -baseUrl $baseUrl -namespace $namespace
             }
             '11' {
                 ShowSSHCommandsToContainers -namespace $namespace
