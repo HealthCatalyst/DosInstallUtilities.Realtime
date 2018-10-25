@@ -24,12 +24,12 @@ function ShowRealtimeMenu() {
     [CmdletBinding()]
     param
     (
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $baseUrl
         ,
-        [Parameter(Mandatory=$true)]
+        [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string]
         $namespace
@@ -37,6 +37,9 @@ function ShowRealtimeMenu() {
         [Parameter(Mandatory = $true)]
         [bool]
         $local
+        ,
+        [bool]
+        $isAzure = $true
     )
 
     Write-Verbose 'ShowRealtimeMenu: Starting'
@@ -67,18 +70,27 @@ function ShowRealtimeMenu() {
         switch ($userinput) {
             '1' {
                 $packageUrl = $globals.realtimePackageUrl
-                if($local)
-                {
+                if ($local) {
                     $packageUrl = "$here\..\..\..\helm.realtime\fabricrealtime"
                     Write-Host "Loading package from $packageUrl"
                 }
                 $namespace = "fabricrealtime"
 
-                $VerbosePreference  = 'Continue'
+                $VerbosePreference = 'Continue'
 
                 CreateSecretsForStack -namespace $namespace -Verbose
 
-                InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local -Verbose
+                if ($isAzure) {
+                    InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local -Verbose
+                }
+                else {
+                    CreateOnPremStorage -namespace $namespace
+
+                    InstallStackInKubernetes `
+                        -namespace $namespace `
+                        -package $namespace `
+                        -packageUrl $packageUrl
+                }
             }
             '2' {
                 kubectl get 'deployments,pods,services,ingress,secrets,persistentvolumeclaims,persistentvolumes,nodes' --namespace=$namespace -o wide
@@ -185,7 +197,24 @@ function ShowRealtimeMenu() {
                 if ($confirmation -eq "y") {
 
                     DeleteHelmPackage -package $namespace -Verbose
-                    DeleteNamespaceAndData -namespace "$namespace" -isAzure $isAzure -Verbose
+
+                    if($isAzure){
+
+                        DeleteNamespaceAndData -namespace "$namespace" -isAzure $isAzure -Verbose
+                    }
+                    else
+                    {
+                        CleanOutNamespace -namespace $namespace
+
+                        if ($isAzure) {
+                            DeleteAzureStorage -namespace $namespace
+                        }
+                        else {
+                            DeleteOnPremStorage -namespace $namespace
+                        }
+
+                        DeleteAllSecretsInNamespace -namespace $namespace -Verbose
+                    }
                 }
             }
             '13' {
