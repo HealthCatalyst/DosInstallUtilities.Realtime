@@ -89,7 +89,8 @@ function ShowRealtimeMenu() {
                     InstallStackInKubernetes `
                         -namespace $namespace `
                         -package $namespace `
-                        -packageUrl $packageUrl
+                        -packageUrl $packageUrl `
+                        -isOnPrem $true
                 }
             }
             '2' {
