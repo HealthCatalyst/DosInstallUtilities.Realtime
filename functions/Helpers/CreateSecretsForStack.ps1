@@ -34,8 +34,10 @@ function CreateSecretsForStack() {
     CreateNamespaceIfNotExists -namespace $namespace
 
     $secret = "certhostname"
-    $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
-    SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
+    # $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
+    # SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
+
+    AskForSecretValue -secretname $secret -namespace $namespace -prompt "Enter hostname for certificates"
 
     $secret = "mysqlrootpassword"
     GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
