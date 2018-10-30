@@ -79,7 +79,7 @@ function ShowRealtimeMenu() {
 
                 $VerbosePreference = 'Continue'
 
-                CreateSecretsForStack -namespace $namespace -Verbose
+                CreateSecretsForRealtime -namespace $namespace -Verbose
 
                 if ($isAzure) {
                     InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local -Verbose

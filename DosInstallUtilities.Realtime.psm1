@@ -4,7 +4,7 @@
 . $PSScriptRoot\functions\Menus\ShowRealtimeMenu.ps1
 
 # Helpers
-. $PSScriptRoot\functions\Helpers\CreateSecretsForStack.ps1
+. $PSScriptRoot\functions\Helpers\CreateSecretsForRealtime.ps1
 
 # Testers
 . $PSScriptRoot\functions\Testers\Test-TcpPort.ps1

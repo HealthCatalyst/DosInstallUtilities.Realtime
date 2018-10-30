@@ -1,25 +1,25 @@
 <#
 .SYNOPSIS
-CreateSecretsForStack
+CreateSecretsForRealtime
 
 .DESCRIPTION
-CreateSecretsForStack
+CreateSecretsForRealtime
 
 .INPUTS
-CreateSecretsForStack - The name of CreateSecretsForStack
+CreateSecretsForRealtime - The name of CreateSecretsForRealtime
 
 .OUTPUTS
 None
 
 .EXAMPLE
-CreateSecretsForStack
+CreateSecretsForRealtime
 
 .EXAMPLE
-CreateSecretsForStack
+CreateSecretsForRealtime
 
 
 #>
-function CreateSecretsForStack() {
+function CreateSecretsForRealtime() {
     [CmdletBinding()]
     param
     (
@@ -29,7 +29,7 @@ function CreateSecretsForStack() {
         $namespace
     )
 
-    Write-Verbose 'CreateSecretsForStack: Starting'
+    Write-Verbose 'CreateSecretsForRealtime: Starting'
 
     CreateNamespaceIfNotExists -namespace $namespace
 
@@ -48,7 +48,7 @@ function CreateSecretsForStack() {
     $secret = "rabbitmqmgmtuipassword"
     GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
 
-    Write-Verbose 'CreateSecretsForStack: Done'
+    Write-Verbose 'CreateSecretsForRealtime: Done'
 }
 
-Export-ModuleMember -Function 'CreateSecretsForStack'
+Export-ModuleMember -Function 'CreateSecretsForRealtime'
