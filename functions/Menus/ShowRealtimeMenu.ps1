@@ -127,7 +127,6 @@ function ShowRealtimeMenu() {
                 Do { $confirmation = Read-Host "Do you want to continue? (y/n)"}
                 while ([string]::IsNullOrWhiteSpace($confirmation))
 
-                $isAzure = $true
                 if ($confirmation -eq "y") {
 
                     DeleteHelmPackage -package $namespace -Verbose
@@ -168,8 +167,14 @@ function ShowRealtimeMenu() {
                 Install-Certificate -certdata $($result.CertData) -certpass "$certpassword"
             }
             '33' {
-                $loadBalancerInfo = $(GetLoadBalancerIPs -Verbose)
-                Write-Host "Host= $($loadBalancerInfo.ExternalIP)"
+                if($isAzure){
+                    $loadBalancerInfo = $(GetLoadBalancerIPs -Verbose)
+                    Write-Host "Host= $($loadBalancerInfo.ExternalIP)"
+                }
+                else {
+                    $certhostname = $(ReadSecretValue certhostname $namespace)
+                    Write-Host "Host=$certhostname"
+                }
                 $certpassword = $(ReadSecretPassword certpassword $namespace)
                 Write-Host "Certificate Password= $certpassword"
 
