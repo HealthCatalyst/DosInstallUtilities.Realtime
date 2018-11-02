@@ -34,16 +34,18 @@ function CreateSecretsForRealtime() {
     CreateNamespaceIfNotExists -namespace $namespace
 
     $secret = "certhostname"
-    # $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
-    # SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
+    $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
+    SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
 
-    AskForSecretValue -secretname $secret -namespace $namespace -prompt "Enter hostname for certificates"
+    $secret = "certpassword"
+    $value = $(ReadSecretPassword -secretname "$secret" -namespace "default")
+    SaveSecretPassword -secretname "$secret" -value "$value" -namespace "$namespace"
+
+    # AskForSecretValue -secretname $secret -namespace $namespace -prompt "Enter hostname for certificates"
 
     $secret = "mysqlrootpassword"
     GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
     $secret = "mysqlpassword"
-    GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
-    $secret = "certpassword"
     GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
     $secret = "rabbitmqmgmtuipassword"
     GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
