@@ -72,8 +72,6 @@ function ShowRealtimeMenu() {
                     $packageUrl = "$here\..\..\..\helm.realtime\fabricrealtime"
                     Write-Host "Loading package from $packageUrl"
                 }
-                $namespace = "fabricrealtime"
-
                 $VerbosePreference = 'Continue'
 
                 CreateSecretsForRealtime -namespace $namespace -Verbose
