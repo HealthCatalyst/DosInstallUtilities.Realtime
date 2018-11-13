@@ -30,16 +30,24 @@ function CreateSecretsForRealtime() {
     )
 
     Write-Verbose 'CreateSecretsForRealtime: Starting'
+    Set-StrictMode -Version latest
+    # stop whenever there is an error
+    $ErrorActionPreference = "Stop"
 
     CreateNamespaceIfNotExists -namespace $namespace
 
-    $secret = "certhostname"
-    $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
+    [string] $secret = "certhostname"
+    [string] $value = $(ReadSecretValue -secretname "dnshostname" -namespace "default")
     SaveSecretValue -secretname "certhostname" -valueName "value" -value "$value" -namespace "$namespace"
 
-    $secret = "certpassword"
+    [string] $secret = "certpassword"
     $value = $(ReadSecretPassword -secretname "$secret" -namespace "default")
-    SaveSecretPassword -secretname "$secret" -value "$value" -namespace "$namespace"
+    if ([string]::IsNullOrEmpty($value)) {
+        GenerateSecretPassword -secretname "$secret" -namespace "$namespace"
+    }
+    else {
+        SaveSecretPassword -secretname "$secret" -value "$value" -namespace "$namespace"
+    }
 
     # AskForSecretValue -secretname $secret -namespace $namespace -prompt "Enter hostname for certificates"
 
