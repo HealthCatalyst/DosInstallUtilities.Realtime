@@ -67,7 +67,7 @@ function ShowRealtimeMenu() {
         $userinput = Read-Host "Please make a selection"
         switch ($userinput) {
             '1' {
-                $packageUrl = $globals.realtimePackageUrl
+                $packageUrl = $kubeGlobals.realtimePackageUrl
                 if ($local) {
                     $packageUrl = "$here\..\..\..\helm.realtime\fabricrealtime"
                     Write-Host "Loading package from $packageUrl"
