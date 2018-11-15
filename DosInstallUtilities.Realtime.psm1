@@ -12,3 +12,6 @@
 . $PSScriptRoot\functions\Testers\Test-DownloadCertificate.ps1
 . $PSScriptRoot\functions\Testers\Install-Certificate.ps1
 . $PSScriptRoot\functions\Testers\Test-RabbitMq.ps1
+
+# Install
+. $PSScriptRoot\functions\Install\InstallRealtime.ps1

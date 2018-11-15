@@ -74,20 +74,7 @@ function ShowRealtimeMenu() {
                 }
                 $VerbosePreference = 'Continue'
 
-                CreateSecretsForRealtime -namespace $namespace -Verbose
-
-                if ($isAzure) {
-                    InstallProductInAzure -namespace $namespace -packageUrl $packageUrl -local $local -Verbose
-                }
-                else {
-                    CreateOnPremStorage -namespace $namespace
-
-                    InstallStackInKubernetes `
-                        -namespace $namespace `
-                        -package $namespace `
-                        -packageUrl $packageUrl `
-                        -isOnPrem $true
-                }
+                InstallRealtime -namespace $namespace -package "fabricrealtime" -packageUrl $packageUrl -local $local -isAzure $isAzure
             }
             '2' {
                 kubectl get 'deployments,pods,services,ingress,secrets,persistentvolumeclaims,persistentvolumes,nodes' --namespace=$namespace -o wide
