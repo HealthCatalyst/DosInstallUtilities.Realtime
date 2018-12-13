@@ -80,20 +80,7 @@ function ShowRealtimeMenu() {
                 kubectl get 'deployments,pods,services,ingress,secrets,persistentvolumeclaims,persistentvolumes,nodes' --namespace=$namespace -o wide
             }
             '3' {
-                $certhostname = $(ReadSecretValue certhostname $namespace)
-                Write-Host "Send HL7 to Mirth: server=${certhostname} port=6661"
-                Write-Host "Rabbitmq Queue: server=${certhostname} port=5671"
-                $rabbitmqpassword = $(ReadSecretPassword rabbitmqmgmtuipassword $namespace)
-                Write-Host "RabbitMq Mgmt UI is at: http://${certhostname}/rabbitmq/ user: admin password: $rabbitmqpassword"
-                Write-Host "Mirth Mgmt UI is at: http://${certhostname}/mirth/ user: admin password:admin"
-
-                $secrets = $(kubectl get secrets -n $namespace -o jsonpath="{.items[?(@.type=='Opaque')].metadata.name}")
-                Write-Host "All secrets in $namespace : $secrets"
-                WriteSecretPasswordToOutput -namespace $namespace -secretname "mysqlrootpassword"
-                WriteSecretPasswordToOutput -namespace $namespace -secretname "mysqlpassword"
-                WriteSecretValueToOutput  -namespace $namespace -secretname "certhostname"
-                WriteSecretPasswordToOutput -namespace $namespace -secretname "certpassword"
-                WriteSecretPasswordToOutput -namespace $namespace -secretname "rabbitmqmgmtuipassword"
+                ShowUrlsAndPasswordsForRealtime -namespace "$namespace" -Verbose
             }
             '5' {
                 ShowStatusOfAllPodsInNameSpace "$namespace"

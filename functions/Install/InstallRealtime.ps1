@@ -95,6 +95,15 @@ function InstallRealtime() {
     # read tcp ports and update ngnix with those ports
     SetTcpPortsForStack -namespace $namespace -Verbose
 
+    ShowUrlsAndPasswordsForRealtime -namespace "$namespace" -Verbose
+
+    $certpassword = $(ReadSecretPassword certpassword $namespace)
+    Write-Host "Certificate Password= $certpassword"
+
+    Write-Host "Download the realtime tester from https://github.com/HealthCatalyst/Fabric.Realtime.Tester/releases"
+
+    Read-Host -Prompt "Click ENTER to continue"
+
     Write-Verbose 'InstallRealtime: Done'
 }
 

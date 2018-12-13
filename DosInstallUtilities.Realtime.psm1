@@ -5,6 +5,7 @@
 
 # Helpers
 . $PSScriptRoot\functions\Helpers\CreateSecretsForRealtime.ps1
+. $PSScriptRoot\functions\Helpers\ShowUrlsAndPasswordsForRealtime.ps1
 
 # Testers
 . $PSScriptRoot\functions\Testers\Test-TcpPort.ps1
